@@ -1,7 +1,11 @@
 name: Playwright Tests
 
-# Trigger on pull requests only
+# Trigger on every commit and pull requests
 on:
+  push:
+    branches:
+      - main
+      - develop
   pull_request:
     branches:
       - main
