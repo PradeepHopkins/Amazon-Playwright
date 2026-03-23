@@ -34,68 +34,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: 📦 Install dependencies with retry
-        shell: bash
-        run: |
-          retry_count=0
-          max_retries=1
-          until [ $retry_count -ge $((max_retries + 1)) ]; do
-            if npm ci; then
-              echo "✅ Dependencies installed successfully"
-              break
-            else
-              retry_count=$((retry_count + 1))
-              if [ $retry_count -le $max_retries ]; then
-                echo "⚠️  npm ci failed. Retrying... (Attempt $((retry_count + 1))/$((max_retries + 1)))"
-                sleep 5
-              else
-                echo "❌ npm ci failed after $((max_retries + 1)) attempts"
-                exit 1
-              fi
-            fi
-          done
+      - name: 📦 Install dependencies
+        run: npm ci
 
-      - name: 🌐 Install Playwright browsers with retry
-        shell: bash
-        run: |
-          retry_count=0
-          max_retries=1
-          until [ $retry_count -ge $((max_retries + 1)) ]; do
-            if npx playwright install --with-deps chromium; then
-              echo "✅ Playwright browsers installed successfully"
-              break
-            else
-              retry_count=$((retry_count + 1))
-              if [ $retry_count -le $max_retries ]; then
-                echo "⚠️  Playwright install failed. Retrying... (Attempt $((retry_count + 1))/$((max_retries + 1)))"
-                sleep 5
-              else
-                echo "❌ Playwright install failed after $((max_retries + 1)) attempts"
-                exit 1
-              fi
-            fi
-          done
+      - name: 🌐 Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
-      - name: 🧪 Run Playwright tests with retry
-        shell: bash
-        run: |
-          retry_count=0
-          max_retries=1
-          until [ $retry_count -ge $((max_retries + 1)) ]; do
-            if npx playwright test; then
-              echo "✅ Tests passed successfully"
-              break
-            else
-              retry_count=$((retry_count + 1))
-              if [ $retry_count -le $max_retries ]; then
-                echo "⚠️  Tests failed. Retrying... (Attempt $((retry_count + 1))/$((max_retries + 1)))"
-                sleep 5
-              else
-                echo "❌ Tests failed after $((max_retries + 1)) attempts"
-                exit 1
-              fi
-            fi
-          done
+      - name: 🧪 Run Playwright tests
+        run: npx playwright test
 
       - name: 📊 Upload JUnit Test Results
         if: always()
