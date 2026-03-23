@@ -12,6 +12,4 @@ node_modules/
 /allure-report/
 
 # Environment variables
-.env
 .env.*
-
